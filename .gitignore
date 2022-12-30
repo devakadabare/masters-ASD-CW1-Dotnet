@@ -10,6 +10,8 @@
 *.userosscache
 *.sln.docstates
 
+store.*
+API/store.db
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
@@ -475,3 +477,4 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+API/store.db

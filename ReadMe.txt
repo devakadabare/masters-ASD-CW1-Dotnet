@@ -1,5 +1,5 @@
 dotnet ef database update
-dotnet ef migrations add CreateBudget_Account -o Data/Migrations
+dotnet ef migrations add Intilizing -o Data/Migrations
 dotnet ef database drop
 
 //------------------------------------------------------
