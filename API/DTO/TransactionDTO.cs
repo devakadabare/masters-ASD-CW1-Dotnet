@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Enum;
-using API.Interface;
 
-namespace API.Entities
+namespace API.DTO
 {
-    public class Transaction: ITransaction
+    public class TransactionDTO
     {
-        public int id { get; set; }
 
         public long amout { get; set; }
 
@@ -23,6 +21,9 @@ namespace API.Entities
 
         public int accountId { get; set; }
 
+        public int? transferAccountId { get; set; }
+
     }
 
+    
 }

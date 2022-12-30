@@ -13,11 +13,11 @@ namespace API.Entities
 
         public string? description { get; set; }
 
-        public AccountStatus status { get; set; }
-    }
+        public long balance { get; set; }
 
-    public enum AccountStatus {
-        Active = 1,
-        Inactive = 2
+        public AccountStatus status { get; set; }
+
+        public ICollection<Transaction>? transactions { get; set; }
     }
+    
 }

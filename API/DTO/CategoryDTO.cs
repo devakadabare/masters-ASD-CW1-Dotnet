@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Enum;
 
-namespace API.Entities
+namespace API.DTO
 {
-    public class Category
+    public class CategoryDTO
     {
-        public int id { get; set; }
-
         public string name { get; set; }
 
         public string? description { get; set; }
@@ -17,6 +15,5 @@ namespace API.Entities
         public CategoryType type { get; set;}
 
         public CategoryStatus status { get; set; }
-
     }
 }

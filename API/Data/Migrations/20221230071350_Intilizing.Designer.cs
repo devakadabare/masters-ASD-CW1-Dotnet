@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20221228061912_Intilizing")]
+    [Migration("20221230071350_Intilizing")]
     partial class Intilizing
     {
         /// <inheritdoc />
@@ -24,6 +24,9 @@ namespace API.Data.Migrations
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("balance")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("description")
@@ -91,7 +94,7 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("accountId")
+                    b.Property<int>("accountId")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("amout")
@@ -106,15 +109,28 @@ namespace API.Data.Migrations
                     b.Property<string>("note")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("transferAccountId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("type")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("id");
 
+                    b.HasIndex("accountId");
+
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("API.Entities.Transaction", b =>
+                {
+                    b.HasOne("API.Entities.Account", null)
+                        .WithMany("transactions")
+                        .HasForeignKey("accountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("API.Entities.Account", b =>
+                {
+                    b.Navigation("transactions");
                 });
 #pragma warning restore 612, 618
         }

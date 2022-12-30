@@ -19,6 +19,7 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     name = table.Column<string>(type: "TEXT", nullable: false),
                     description = table.Column<string>(type: "TEXT", nullable: true),
+                    balance = table.Column<long>(type: "INTEGER", nullable: false),
                     status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -68,21 +69,28 @@ namespace API.Data.Migrations
                     date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     type = table.Column<int>(type: "INTEGER", nullable: false),
                     categoryId = table.Column<int>(type: "INTEGER", nullable: true),
-                    accountId = table.Column<int>(type: "INTEGER", nullable: true),
-                    transferAccountId = table.Column<int>(type: "INTEGER", nullable: true)
+                    accountId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Accounts_accountId",
+                        column: x => x.accountId,
+                        principalTable: "Accounts",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_accountId",
+                table: "Transactions",
+                column: "accountId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Accounts");
-
             migrationBuilder.DropTable(
                 name: "Budgets");
 
@@ -91,6 +99,9 @@ namespace API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
         }
     }
 }
