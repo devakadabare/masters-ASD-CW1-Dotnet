@@ -53,7 +53,13 @@ namespace API.Data.Migrations
                     b.Property<int>("categoryId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("month")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("id");
@@ -91,13 +97,16 @@ namespace API.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("accountId")
+                    b.Property<int>("accountid")
                         .HasColumnType("INTEGER");
 
                     b.Property<long>("amout")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("categoryId")
+                    b.Property<int?>("categoryid")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("creditDebitIndicator")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("date")
@@ -111,21 +120,36 @@ namespace API.Data.Migrations
 
                     b.HasKey("id");
 
-                    b.HasIndex("accountId");
+                    b.HasIndex("accountid");
+
+                    b.HasIndex("categoryid");
 
                     b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("API.Entities.Transaction", b =>
                 {
-                    b.HasOne("API.Entities.Account", null)
+                    b.HasOne("API.Entities.Account", "account")
                         .WithMany("transactions")
-                        .HasForeignKey("accountId")
+                        .HasForeignKey("accountid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("API.Entities.Category", "category")
+                        .WithMany("transactions")
+                        .HasForeignKey("categoryid");
+
+                    b.Navigation("account");
+
+                    b.Navigation("category");
                 });
 
             modelBuilder.Entity("API.Entities.Account", b =>
+                {
+                    b.Navigation("transactions");
+                });
+
+            modelBuilder.Entity("API.Entities.Category", b =>
                 {
                     b.Navigation("transactions");
                 });

@@ -19,9 +19,11 @@ namespace API.Entities
 
         public TransactionType type { get; set; }
 
-        public int? categoryId { get; set; } 
+        public Account account { get; set; }
 
-        public int accountId { get; set; }
+        public Category? category { get; set; }
+
+        public CreditDebitIndicator creditDebitIndicator { get; set; }
 
     }
 

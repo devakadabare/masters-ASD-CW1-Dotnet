@@ -18,5 +18,7 @@ namespace API.Entities
 
         public CategoryStatus status { get; set; }
 
+        public ICollection<Transaction>? transactions { get; set; }
+
     }
 }

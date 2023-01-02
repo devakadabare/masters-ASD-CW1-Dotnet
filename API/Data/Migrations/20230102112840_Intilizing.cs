@@ -35,6 +35,8 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     categoryId = table.Column<int>(type: "INTEGER", nullable: false),
                     amount = table.Column<long>(type: "INTEGER", nullable: false),
+                    month = table.Column<int>(type: "INTEGER", nullable: false),
+                    year = table.Column<int>(type: "INTEGER", nullable: false),
                     status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -68,24 +70,35 @@ namespace API.Data.Migrations
                     note = table.Column<string>(type: "TEXT", nullable: true),
                     date = table.Column<DateTime>(type: "TEXT", nullable: false),
                     type = table.Column<int>(type: "INTEGER", nullable: false),
-                    categoryId = table.Column<int>(type: "INTEGER", nullable: true),
-                    accountId = table.Column<int>(type: "INTEGER", nullable: false)
+                    accountid = table.Column<int>(type: "INTEGER", nullable: false),
+                    categoryid = table.Column<int>(type: "INTEGER", nullable: true),
+                    creditDebitIndicator = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Transactions", x => x.id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Accounts_accountId",
-                        column: x => x.accountId,
+                        name: "FK_Transactions_Accounts_accountid",
+                        column: x => x.accountid,
                         principalTable: "Accounts",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Categories_categoryid",
+                        column: x => x.categoryid,
+                        principalTable: "Categories",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_accountId",
+                name: "IX_Transactions_accountid",
                 table: "Transactions",
-                column: "accountId");
+                column: "accountid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_categoryid",
+                table: "Transactions",
+                column: "categoryid");
         }
 
         /// <inheritdoc />
@@ -95,13 +108,13 @@ namespace API.Data.Migrations
                 name: "Budgets");
 
             migrationBuilder.DropTable(
-                name: "Categories");
-
-            migrationBuilder.DropTable(
                 name: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

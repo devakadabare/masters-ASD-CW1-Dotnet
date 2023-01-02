@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Entities;
 using API.Enum;
 
 namespace API.Interface
@@ -17,10 +18,9 @@ namespace API.Interface
 
         TransactionType type { get; set; }
 
-        int? categoryId { get; set; } 
+        Account account { get; set; }
 
-        int accountId { get; set; }
-
+        Category? category { get; set; }
 
     }
 }

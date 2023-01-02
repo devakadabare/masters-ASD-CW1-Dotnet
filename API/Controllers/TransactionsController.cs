@@ -104,8 +104,9 @@ namespace API.Controllers
                 note = transaction.note,
                 date = transaction.date,
                 type = (Enum.TransactionType)transaction.type,
-                categoryId = transaction.categoryId,
-                accountId = (int)transaction.accountId,
+                account = await _context.Accounts.FindAsync(transaction.accountId),
+                category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                creditDebitIndicator = transaction.type == Enum.TransactionType.Income ? Enum.CreditDebitIndicator.Credit : Enum.CreditDebitIndicator.Debit
             };
             var result = _context.Transactions.Add(newTransaction);
 
@@ -118,8 +119,9 @@ namespace API.Controllers
                     note = transaction.note,
                     date = transaction.date,
                     type = Enum.TransactionType.Transfer,
-                    categoryId = transaction.categoryId,
-                    accountId = (int)transaction.transferAccountId
+                    creditDebitIndicator = Enum.CreditDebitIndicator.Credit,
+                    account = await _context.Accounts.FindAsync(transaction.transferAccountId),
+                    category = await _context.Categories.FindAsync(transaction.categoryId) ?? null
                 };
                 _context.Transactions.Add(transaction2);
             }
@@ -134,15 +136,14 @@ namespace API.Controllers
             var updateTransaction = await _context.Transactions.FindAsync(id);
             
             if(updateTransaction == null)
-            {
                 return NotFound();
-            }
+ 
             updateTransaction.amout = transaction.amout;
             updateTransaction.note = transaction.note;
             updateTransaction.date = transaction.date;
             updateTransaction.type = (Enum.TransactionType)transaction.type;
-            updateTransaction.categoryId = transaction.categoryId;
-            updateTransaction.accountId = (int)transaction.accountId;
+            updateTransaction.category = await _context.Categories.FindAsync(transaction.categoryId);
+            updateTransaction.account = await _context.Accounts.FindAsync(transaction.accountId) ;
 
             _context.Transactions.Update(updateTransaction);
             await _context.SaveChangesAsync();

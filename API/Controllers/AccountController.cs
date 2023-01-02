@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.DTO;
 using API.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,11 +34,45 @@ namespace API.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ActionResult<Account>> CreateAccount(Account account)
+        public async Task<ActionResult<Account>> CreateAccount(AccountDTO account)
         {
-            var result = _context.Accounts.Add(account);
+            if(account == null)
+            {
+                return BadRequest();
+            }
+
+            //create new account
+            var newAccount = new Account
+            {
+                name = account.name,
+                description = account.description,
+                balance = account.balance,
+                status = account.status
+            };
+
+            _context.Accounts.Add(newAccount);
             await _context.SaveChangesAsync();
-            return Ok(result);
+
+            return Ok(newAccount);
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountDTO account)
+        {
+            var updateAccount = await _context.Accounts.FindAsync(id);
+
+            if(updateAccount == null)
+                return NotFound();
+
+            updateAccount.name = account.name;
+            updateAccount.description = account.description;
+            updateAccount.balance = account.balance;
+            updateAccount.status = account.status;
+
+            _context.Accounts.Update(updateAccount);
+            await _context.SaveChangesAsync();
+
+            return Ok(updateAccount);
         }
         
     }
