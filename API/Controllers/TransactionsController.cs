@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,29 +15,33 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class TransactionsController: ControllerBase
     {
-        private readonly StoreContext _context;
-        public TransactionsController(StoreContext context)
+        private readonly TransactionsService _transactionsService;
+        private readonly AccountService _accountService;
+
+        
+        public TransactionsController(TransactionsService transactionsService, AccountService accountService)
         {
-            _context = context;
+            _transactionsService = transactionsService;
+            _accountService = accountService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Transaction>>> GetTransactions()
         {
-            return await _context.Transactions.ToListAsync();
+            return await _transactionsService.GetTransactions();
 
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Transaction>> GetTransaction(int id)
         {
-            var transaction = await _context.Transactions.FindAsync(id);
-            return Ok(transaction);
+            var transaction = await _transactionsService.GetTransaction(id);
+            return transaction;
         }
 
 
         [HttpPost("create")]
-        public async Task<ActionResult<Transaction>> CreateTransaction(TransactionDTO transaction)
+        public async Task<ActionResult<Transaction>> CreateTransaction(TransactionCreateDTO transaction)
         {
             
             if(transaction == null)
@@ -47,7 +52,9 @@ namespace API.Controllers
             //if transaction type is income
             if(transaction.type == Enum.TransactionType.Income)
             {
-                var account = await _context.Accounts.FindAsync(transaction.accountId);
+                // var account = await _context.Accounts.FindAsync(transaction.accountId);
+                var account = await _accountService.GetAccount(transaction.accountId);
+
                 
                 if(account == null || account.balance < transaction.amout)
                 {
@@ -55,24 +62,24 @@ namespace API.Controllers
                 }
 
                 account.balance += transaction.amout;
-                _context.Accounts.Update(account);
+                await _accountService.UpdateAccount(account.id, account);
             }
             //if transaction type is expense
             else if (transaction.type == Enum.TransactionType.Expense)
             {
-                var account = await _context.Accounts.FindAsync(transaction.accountId);
+                var account = await _accountService.GetAccount(transaction.accountId);
                 if(account == null || account.balance < transaction.amout)
                 {
                     return BadRequest();
                 }
                 account.balance -= transaction.amout;
-                _context.Accounts.Update(account);
+                await _accountService.UpdateAccount(account.id, account);
             }
             //if transaction type is transfer
             else if(transaction.type == Enum.TransactionType.Transfer)
             {
                 //check if account has enough money
-                var account = await _context.Accounts.FindAsync(transaction.accountId);
+                var account = await _accountService.GetAccount(transaction.accountId);
                 if(account == null || account.balance < transaction.amout )
                 {
                     return BadRequest();
@@ -81,7 +88,7 @@ namespace API.Controllers
                 account.balance -= transaction.amout;
                 
                 //check if transfer account has enough money
-                var account2 = await _context.Accounts.FindAsync(transaction.transferAccountId);
+                var account2 = await _accountService.GetAccount((int)transaction.transferAccountId);
                 if(account2 == null || account2.balance < transaction.amout)
                 {
                     return BadRequest();
@@ -89,8 +96,9 @@ namespace API.Controllers
                 //update transfer account balance
                 account2.balance += transaction.amout;
 
-                _context.Accounts.Update(account);
-                _context.Accounts.Update(account2);
+                await _accountService.UpdateAccount(account.id, account);
+                await _accountService.UpdateAccount(account2.id, account2);
+
             }
             else
             {
@@ -98,56 +106,20 @@ namespace API.Controllers
             }
             
             //create transaction
-            var newTransaction = new Transaction
-            {
-                amout = transaction.amout,
-                note = transaction.note,
-                date = transaction.date,
-                type = (Enum.TransactionType)transaction.type,
-                account = await _context.Accounts.FindAsync(transaction.accountId),
-                category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
-                creditDebitIndicator = transaction.type == Enum.TransactionType.Income ? Enum.CreditDebitIndicator.Credit : Enum.CreditDebitIndicator.Debit
-            };
-            var result = _context.Transactions.Add(newTransaction);
-
-            //if transaction type is transfer, create another transaction
-            if(transaction.type == Enum.TransactionType.Transfer && transaction.transferAccountId != null)
-            {
-                var transaction2 = new Transaction
-                {
-                    amout = transaction.amout,
-                    note = transaction.note,
-                    date = transaction.date,
-                    type = Enum.TransactionType.Transfer,
-                    creditDebitIndicator = Enum.CreditDebitIndicator.Credit,
-                    account = await _context.Accounts.FindAsync(transaction.transferAccountId),
-                    category = await _context.Categories.FindAsync(transaction.categoryId) ?? null
-                };
-                _context.Transactions.Add(transaction2);
-            }
-
-            await _context.SaveChangesAsync();
+            var result = await _transactionsService.CreateTransaction(transaction);
             return Ok(result);
         }
 
         [HttpPut("update/{id}")]
         public async Task<ActionResult<Transaction>> UpdateTransaction(int id, TransactionDTO transaction)
         {
-            var updateTransaction = await _context.Transactions.FindAsync(id);
+            var updateTransaction = await _transactionsService.GetTransaction(id);
             
             if(updateTransaction == null)
                 return NotFound();
- 
-            updateTransaction.amout = transaction.amout;
-            updateTransaction.note = transaction.note;
-            updateTransaction.date = transaction.date;
-            updateTransaction.type = (Enum.TransactionType)transaction.type;
-            updateTransaction.category = await _context.Categories.FindAsync(transaction.categoryId);
-            updateTransaction.account = await _context.Accounts.FindAsync(transaction.accountId) ;
-
-            _context.Transactions.Update(updateTransaction);
-            await _context.SaveChangesAsync();
-            return Ok(updateTransaction);
+    
+            return await _transactionsService.UpdateTransaction(id, transaction);
+            
         }
     }
 }

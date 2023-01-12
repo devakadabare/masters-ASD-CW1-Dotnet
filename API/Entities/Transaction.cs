@@ -25,6 +25,8 @@ namespace API.Entities
 
         public CreditDebitIndicator creditDebitIndicator { get; set; }
 
+        public TransactionStatus status { get; set; }
+
     }
 
 }

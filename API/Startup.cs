@@ -32,6 +32,9 @@ namespace API
 
             services.AddControllers();
             services.AddScoped<AccountService>();
+            services.AddScoped<CategoriesService>();
+            services.AddScoped<TransactionsService>();
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIv5", Version = "v1" });

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,58 +15,39 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class CategoriesController: ControllerBase
     {
-        private readonly StoreContext _context;
-        public CategoriesController(StoreContext context)
+        private readonly CategoriesService _categoryService;
+        public CategoriesController(CategoriesService categoryService)
         {
-            _context = context;
+            _categoryService = categoryService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Category>>> GetCategories()
         {
-            var transactions = await _context.Categories.ToListAsync();
-            return Ok(transactions);
+            return await _categoryService.GetCategories();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<Category?>> GetCategory(int id)
         {
-            var transaction = await _context.Categories.FindAsync(id);
-            return Ok(transaction);
+            return await _categoryService.GetCategory(id);
         }
 
         [HttpPost("create")]
         public async Task<ActionResult<Category>> CreateCategory(CategoryDTO category)
         {
-            var newCategory = new Category
-            {
-                name = category.name,
-                type = (Enum.CategoryType)category.type,
-                description = category.description,
-                status = category.status
-            };
-            var result = _context.Categories.Add(newCategory);
-            await _context.SaveChangesAsync();
-            return Ok(result);
+            return await _categoryService.CreateCategory(category);
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult<Category>> UpdateCategory(int id, CategoryDTO category)
+        public async Task<ActionResult<Category>> UpdateCategory(int id, CategoryUpdateDTO category)
         {
-            var updateCategory = await _context.Categories.FindAsync(id);
+            var updateCategory = await _categoryService.GetCategory(id);
 
             if(updateCategory == null)
                 return NotFound();
 
-            updateCategory.name = category.name;
-            updateCategory.type = (Enum.CategoryType)category.type;
-            updateCategory.description = category.description;
-            updateCategory.status = category.status;
-
-            _context.Categories.Update(updateCategory);
-            await _context.SaveChangesAsync();
-            
-            return Ok(updateCategory);
+            return await _categoryService.UpdateCategory(id, category);
         }
     }
 }

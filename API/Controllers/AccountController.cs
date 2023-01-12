@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Account>> GetAccount(int id)
+        public async Task<ActionResult<Account?>> GetAccount(int id)
         {
             var result = await _accountService.GetAccount(id);
             return result;
@@ -50,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountUpdateDTO account)
+        public async Task<ActionResult<Account>> UpdateAccount(int id, Account account)
         {
             var updateAccount = await _accountService.GetAccount(id);
 

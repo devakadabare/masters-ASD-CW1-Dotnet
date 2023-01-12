@@ -24,13 +24,13 @@ namespace API.Services
             return await _context.Accounts.ToListAsync();
         }
 
-        public async Task<ActionResult<Account?>> GetAccount(int id)
+        public async Task<Account?> GetAccount(int id)
         {
             var account = await _context.Accounts.FindAsync(id);
             return account;
         }
 
-        public async Task<ActionResult<Account>> CreateAccount(AccountDTO account)
+        public async Task<Account> CreateAccount(AccountDTO account)
         {
             var newAccount = new Account
             {
@@ -45,7 +45,7 @@ namespace API.Services
             return newAccount;
         }
 
-        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountUpdateDTO account)
+        public async Task<Account> UpdateAccount(int id, Account account)
         {
             var updateAccount = await _context.Accounts.FindAsync(id);
 
