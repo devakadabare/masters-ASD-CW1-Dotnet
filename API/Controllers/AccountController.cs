@@ -50,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountDTO account)
+        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountUpdateDTO account)
         {
             var updateAccount = await _accountService.GetAccount(id);
 
