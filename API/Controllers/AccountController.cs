@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,23 +15,24 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class AccountController: ControllerBase
     {
-        private readonly StoreContext _context;
-        public AccountController(StoreContext context)
+        private readonly AccountService _accountService;
+        public AccountController(AccountService accountService)
         {
-            _context = context;
+            _accountService = accountService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<Account>>> GetAccounts()
         {
-            return await _context.Accounts.ToListAsync();
+            var result = await _accountService.GetAccounts();
+            return result;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Account>> GetAccount(int id)
         {
-            var account = await _context.Accounts.FindAsync(id);
-            return Ok(account);
+            var result = await _accountService.GetAccount(id);
+            return result;
         }
 
         [HttpPost("create")]
@@ -42,37 +44,22 @@ namespace API.Controllers
             }
 
             //create new account
-            var newAccount = new Account
-            {
-                name = account.name,
-                description = account.description,
-                balance = account.balance,
-                status = account.status
-            };
+            var result = await _accountService.CreateAccount(account);
 
-            _context.Accounts.Add(newAccount);
-            await _context.SaveChangesAsync();
-
-            return Ok(newAccount);
+            return result;
         }
 
         [HttpPut("update/{id}")]
         public async Task<ActionResult<Account>> UpdateAccount(int id, AccountDTO account)
         {
-            var updateAccount = await _context.Accounts.FindAsync(id);
+            var updateAccount = await _accountService.GetAccount(id);
 
             if(updateAccount == null)
                 return NotFound();
 
-            updateAccount.name = account.name;
-            updateAccount.description = account.description;
-            updateAccount.balance = account.balance;
-            updateAccount.status = account.status;
+            var result = await _accountService.UpdateAccount(id, account);
 
-            _context.Accounts.Update(updateAccount);
-            await _context.SaveChangesAsync();
-
-            return Ok(updateAccount);
+            return result;
         }
         
     }

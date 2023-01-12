@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using API.Enum;
 
 namespace API.Entities
 {
@@ -18,10 +19,5 @@ namespace API.Entities
         public int year { get; set; }
 
         public BudgetStatus status { get; set; }
-    }
-
-    public enum BudgetStatus {
-        Active = 1,
-        Inactive = 2
     }
 }

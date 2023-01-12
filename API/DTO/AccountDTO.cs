@@ -14,6 +14,6 @@ namespace API.DTO
 
         public long balance { get; set; }
 
-        public AccountStatus status { get; set; }
+        //public AccountStatus status { get; set; }
     }
 }
