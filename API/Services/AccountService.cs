@@ -37,7 +37,7 @@ namespace API.Services
                 name = account.name,
                 description = account.description,
                 balance = account.balance,
-                status = account.status
+                status = AccountStatus.Active
             };
 
             var result =_context.Accounts.Add(newAccount);
@@ -45,7 +45,7 @@ namespace API.Services
             return newAccount;
         }
 
-        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountDTO account)
+        public async Task<ActionResult<Account>> UpdateAccount(int id, AccountUpdateDTO account)
         {
             var updateAccount = await _context.Accounts.FindAsync(id);
 

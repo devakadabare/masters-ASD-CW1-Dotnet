@@ -6,7 +6,7 @@ using API.Entities;
 
 namespace API.DTO
 {
-    public class AccountDTO
+    public class AccountUpdateDTO
     {
         public string name { get; set; }
 
@@ -14,5 +14,6 @@ namespace API.DTO
 
         public long balance { get; set; }
 
+        public AccountStatus status { get; set; }
     }
 }
