@@ -34,6 +34,7 @@ namespace API
             services.AddScoped<AccountService>();
             services.AddScoped<CategoriesService>();
             services.AddScoped<TransactionsService>();
+            services.AddScoped<BudgetService>();
             
             services.AddSwaggerGen(c =>
             {
