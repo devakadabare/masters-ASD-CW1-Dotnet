@@ -62,7 +62,14 @@ namespace API.Controllers
                 }
 
                 account.balance += transaction.amout;
-                await _accountService.UpdateAccount(account.id, account);
+                var newAccount = new AccountDTO
+                {
+                    name = account.name,
+                    description = account.description,
+                    balance = account.balance,
+                    status = account.status
+                };
+                await _accountService.UpdateAccount(account.id, newAccount);
             }
             //if transaction type is expense
             else if (transaction.type == Enum.TransactionType.Expense)
@@ -73,7 +80,15 @@ namespace API.Controllers
                     return BadRequest();
                 }
                 account.balance -= transaction.amout;
-                await _accountService.UpdateAccount(account.id, account);
+
+                var newAccount = new AccountDTO
+                {
+                    name = account.name,
+                    description = account.description,
+                    balance = account.balance,
+                    status = account.status
+                };
+                await _accountService.UpdateAccount(account.id, newAccount);
             }
             //if transaction type is transfer
             else if(transaction.type == Enum.TransactionType.Transfer)
@@ -96,8 +111,24 @@ namespace API.Controllers
                 //update transfer account balance
                 account2.balance += transaction.amout;
 
-                await _accountService.UpdateAccount(account.id, account);
-                await _accountService.UpdateAccount(account2.id, account2);
+                var newAccount = new AccountDTO
+                {
+                    name = account.name,
+                    description = account.description,
+                    balance = account.balance,
+                    status = account.status
+                };
+
+                var newAccount2 = new AccountDTO
+                {
+                    name = account.name,
+                    description = account.description,
+                    balance = account.balance,
+                    status = account.status
+                };
+
+                await _accountService.UpdateAccount(account.id, newAccount);
+                await _accountService.UpdateAccount(account2.id, newAccount2);
 
             }
             else
@@ -107,7 +138,7 @@ namespace API.Controllers
             
             //create transaction
             var result = await _transactionsService.CreateTransaction(transaction);
-            return Ok(result);
+            return Ok();
         }
 
         [HttpPut("update/{id}")]

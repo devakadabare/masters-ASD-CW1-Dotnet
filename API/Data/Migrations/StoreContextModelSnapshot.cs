@@ -115,6 +115,9 @@ namespace API.Data.Migrations
                     b.Property<string>("note")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("status")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("type")
                         .HasColumnType("INTEGER");
 

@@ -45,7 +45,7 @@ namespace API.Services
             return newAccount;
         }
 
-        public async Task<Account> UpdateAccount(int id, Account account)
+        public async Task<Account> UpdateAccount(int id, AccountDTO account)
         {
             var updateAccount = await _context.Accounts.FindAsync(id);
 

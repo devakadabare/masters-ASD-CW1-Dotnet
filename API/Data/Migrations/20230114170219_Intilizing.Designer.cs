@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Data.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20230102112840_Intilizing")]
+    [Migration("20230114170219_Intilizing")]
     partial class Intilizing
     {
         /// <inheritdoc />
@@ -117,6 +117,9 @@ namespace API.Data.Migrations
 
                     b.Property<string>("note")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("status")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("type")
                         .HasColumnType("INTEGER");

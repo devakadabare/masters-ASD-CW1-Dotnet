@@ -72,7 +72,8 @@ namespace API.Data.Migrations
                     type = table.Column<int>(type: "INTEGER", nullable: false),
                     accountid = table.Column<int>(type: "INTEGER", nullable: false),
                     categoryid = table.Column<int>(type: "INTEGER", nullable: true),
-                    creditDebitIndicator = table.Column<int>(type: "INTEGER", nullable: false)
+                    creditDebitIndicator = table.Column<int>(type: "INTEGER", nullable: false),
+                    status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
