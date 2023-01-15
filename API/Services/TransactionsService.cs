@@ -29,18 +29,6 @@ namespace API.Services
 
         public async Task<Transaction> CreateTransaction(TransactionCreateDTO transaction){
 
-            //create transaction
-            // var newTransaction = new Transaction
-            // {
-            //     amout = transaction.amout,
-            //     note = transaction.note,
-            //     date = transaction.date,
-            //     type = (Enum.TransactionType)transaction.type,
-            //     account = await _context.Accounts.FindAsync(transaction.accountId),
-            //     category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
-            //     creditDebitIndicator = transaction.type == Enum.TransactionType.Income ? Enum.CreditDebitIndicator.Credit : Enum.CreditDebitIndicator.Debit
-            // };
-
             switch (transaction.type)
             {
                 case Enum.TransactionType.Expense:
@@ -56,6 +44,7 @@ namespace API.Services
                     _context.Transactions.Add(newExpense);
                      await _context.SaveChangesAsync();
                     return newExpense;
+
                 case Enum.TransactionType.Income:
                     var newIncome = new Income
                     {
@@ -69,6 +58,7 @@ namespace API.Services
                     _context.Transactions.Add(newIncome);
                      await _context.SaveChangesAsync();
                     return newIncome;
+                    
                 case Enum.TransactionType.Transfer:
                     var newTransfer = new Transfer
                     {
