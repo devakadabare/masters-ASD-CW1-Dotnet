@@ -97,12 +97,9 @@ namespace API.Controllers
                 //update account balance
                 account.balance -= transaction.amout;
                 
-                //check if transfer account has enough money
+                //get transfer account
                 var account2 = await _accountService.GetAccount((int)transaction.transferAccountId);
-                if(account2 == null || account2.balance < transaction.amout)
-                {
-                    return BadRequest();
-                }
+    
                 //update transfer account balance
                 account2.balance += transaction.amout;
 
@@ -116,10 +113,10 @@ namespace API.Controllers
 
                 var newAccount2 = new AccountDTO
                 {
-                    name = account.name,
-                    description = account.description,
-                    balance = account.balance,
-                    status = account.status
+                    name = account2.name,
+                    description = account2.description,
+                    balance = account2.balance,
+                    status = account2.status
                 };
 
                 await _accountService.UpdateAccount(account.id, newAccount);

@@ -32,4 +32,31 @@ namespace API.Entities
 
     }
 
+    //expense 
+    public class Expense: Transaction
+    {
+        public Expense()
+        {
+            this.type = TransactionType.Expense;
+        }
+    }
+
+    //income
+    public class Income: Transaction
+    {
+        public Income()
+        {
+            this.type = TransactionType.Income;
+        }
+    }
+
+    //transfer
+    public class Transfer: Transaction
+    {
+        public Transfer()
+        {
+            this.type = TransactionType.Transfer;
+        }
+    }
+
 }

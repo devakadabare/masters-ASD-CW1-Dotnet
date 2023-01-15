@@ -30,38 +30,75 @@ namespace API.Services
         public async Task<Transaction> CreateTransaction(TransactionCreateDTO transaction){
 
             //create transaction
-            var newTransaction = new Transaction
+            // var newTransaction = new Transaction
+            // {
+            //     amout = transaction.amout,
+            //     note = transaction.note,
+            //     date = transaction.date,
+            //     type = (Enum.TransactionType)transaction.type,
+            //     account = await _context.Accounts.FindAsync(transaction.accountId),
+            //     category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+            //     creditDebitIndicator = transaction.type == Enum.TransactionType.Income ? Enum.CreditDebitIndicator.Credit : Enum.CreditDebitIndicator.Debit
+            // };
+
+            switch (transaction.type)
             {
-                amout = transaction.amout,
-                note = transaction.note,
-                date = transaction.date,
-                type = (Enum.TransactionType)transaction.type,
-                account = await _context.Accounts.FindAsync(transaction.accountId),
-                category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
-                creditDebitIndicator = transaction.type == Enum.TransactionType.Income ? Enum.CreditDebitIndicator.Credit : Enum.CreditDebitIndicator.Debit
-            };
-            var result = _context.Transactions.Add(newTransaction);
+                case Enum.TransactionType.Expense:
+                    var newExpense = new Expense
+                    {
+                        amout = transaction.amout,
+                        note = transaction.note,
+                        date = transaction.date,
+                        account = await _context.Accounts.FindAsync(transaction.accountId),
+                        category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                        creditDebitIndicator = Enum.CreditDebitIndicator.Debit
+                    };
+                    _context.Transactions.Add(newExpense);
+                     await _context.SaveChangesAsync();
+                    return newExpense;
+                case Enum.TransactionType.Income:
+                    var newIncome = new Income
+                    {
+                        amout = transaction.amout,
+                        note = transaction.note,
+                        date = transaction.date,
+                        account = await _context.Accounts.FindAsync(transaction.accountId),
+                        category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                        creditDebitIndicator = Enum.CreditDebitIndicator.Credit
+                    };
+                    _context.Transactions.Add(newIncome);
+                     await _context.SaveChangesAsync();
+                    return newIncome;
+                case Enum.TransactionType.Transfer:
+                    var newTransfer = new Transfer
+                    {
+                        amout = transaction.amout,
+                        note = transaction.note,
+                        date = transaction.date,
+                        account = await _context.Accounts.FindAsync(transaction.accountId),
+                        category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                        creditDebitIndicator = Enum.CreditDebitIndicator.Credit
+                    };
 
-            //if transaction type is transfer, create another transaction
-            if(transaction.type == Enum.TransactionType.Transfer && transaction.transferAccountId != null)
-            {
-                var transaction2 = new Transaction
-                {
-                    amout = transaction.amout,
-                    note = transaction.note,
-                    date = transaction.date,
-                    type = Enum.TransactionType.Transfer,
-                    creditDebitIndicator = Enum.CreditDebitIndicator.Credit,
-                    account = await _context.Accounts.FindAsync(transaction.transferAccountId),
-                    category = await _context.Categories.FindAsync(transaction.categoryId) ?? null
-                };
-                _context.Transactions.Add(transaction2);
-            }
+                    var newTransfer2 = new Transfer
+                    {
+                        amout = transaction.amout,
+                        note = transaction.note,
+                        date = transaction.date,
+                        type = (Enum.TransactionType)transaction.type,
+                        account = await _context.Accounts.FindAsync(transaction.transferAccountId),
+                        category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                        creditDebitIndicator = Enum.CreditDebitIndicator.Debit
+                    };
 
-            await _context.SaveChangesAsync(); //save changes to database
-
-            return newTransaction;
-            
+                    _context.Transactions.Add(newTransfer);
+                    _context.Transactions.Add(newTransfer2);
+                    await _context.SaveChangesAsync(); //save changes to database
+                    return newTransfer;
+                default:
+                    return null;
+            }    
+          
         }
 
         public async Task<Transaction> UpdateTransaction(int id, TransactionDTO transaction)
