@@ -1,11 +1,12 @@
 using API.Data;
 using API.Entities;
 using API.Enum;
+using API.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
-    public class BudgetService
+    public class BudgetService: IBudgetService
     {
         private readonly StoreContext _context;
 

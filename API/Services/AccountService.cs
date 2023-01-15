@@ -1,11 +1,12 @@
 using API.Data;
 using API.DTO;
 using API.Entities;
+using API.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
 {
-    public class AccountService
+    public class AccountService: IAccountService
     {
         private readonly StoreContext _context;
 
