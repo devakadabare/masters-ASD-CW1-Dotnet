@@ -75,7 +75,6 @@ namespace API.Services
                         amout = transaction.amout,
                         note = transaction.note,
                         date = transaction.date,
-                        type = (Enum.TransactionType)transaction.type,
                         account = await _context.Accounts.FindAsync(transaction.transferAccountId),
                         category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
                         creditDebitIndicator = Enum.CreditDebitIndicator.Debit
