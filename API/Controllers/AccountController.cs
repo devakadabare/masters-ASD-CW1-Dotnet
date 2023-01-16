@@ -41,7 +41,7 @@ namespace API.Controllers
             //create new account
             var result = await _accountService.CreateAccount(account);
 
-            return result;
+            return Ok();
         }
 
         [HttpPut("update/{id}")]

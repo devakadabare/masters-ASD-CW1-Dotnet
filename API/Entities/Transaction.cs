@@ -26,6 +26,11 @@ namespace API.Entities
         [ForeignKey("Category")] 
         public int? categoryid { get; set; }
 
+        public User user { get; set; }
+        
+        [ForeignKey("User")]
+        public int userid { get; set; }
+
         public CreditDebitIndicator creditDebitIndicator { get; set; }
 
         public TransactionStatus status { get; set; }

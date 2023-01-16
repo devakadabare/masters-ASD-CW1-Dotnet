@@ -40,7 +40,7 @@ namespace API.Controllers
             //create new budget
             var result = await _budgetService.CreateBudget(budget);
 
-            return result;
+            return Ok();
         }
 
         [HttpPut("update/{id}")]

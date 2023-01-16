@@ -39,6 +39,7 @@ namespace API.Services
                         date = transaction.date,
                         account = await _context.Accounts.FindAsync(transaction.accountId),
                         category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                        user = await _context.Users.FindAsync(transaction.userid),
                         creditDebitIndicator = Enum.CreditDebitIndicator.Debit
                     };
                     _context.Transactions.Add(newExpense);
@@ -53,6 +54,7 @@ namespace API.Services
                         date = transaction.date,
                         account = await _context.Accounts.FindAsync(transaction.accountId),
                         category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
+                        user = await _context.Users.FindAsync(transaction.userid),
                         creditDebitIndicator = Enum.CreditDebitIndicator.Credit
                     };
                     _context.Transactions.Add(newIncome);
@@ -66,6 +68,7 @@ namespace API.Services
                         note = transaction.note,
                         date = transaction.date,
                         account = await _context.Accounts.FindAsync(transaction.accountId),
+                        user = await _context.Users.FindAsync(transaction.userid),
                         category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
                         creditDebitIndicator = Enum.CreditDebitIndicator.Credit
                     };
@@ -76,6 +79,7 @@ namespace API.Services
                         note = transaction.note,
                         date = transaction.date,
                         account = await _context.Accounts.FindAsync(transaction.transferAccountId),
+                        user = await _context.Users.FindAsync(transaction.userid),
                         category = await _context.Categories.FindAsync(transaction.categoryId) ?? null,
                         creditDebitIndicator = Enum.CreditDebitIndicator.Debit
                     };

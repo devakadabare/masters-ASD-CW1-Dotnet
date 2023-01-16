@@ -33,6 +33,7 @@ namespace API.Services
                 name = account.name,
                 description = account.description,
                 balance = account.balance,
+                user = await _context.Users.FindAsync(account.userid),
                 status = AccountStatus.Active
             };
 

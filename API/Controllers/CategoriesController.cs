@@ -32,7 +32,9 @@ namespace API.Controllers
         [HttpPost("create")]
         public async Task<ActionResult<Category>> CreateCategory(CategoryDTO category)
         {
-            return await _categoryService.CreateCategory(category);
+            var result =  await _categoryService.CreateCategory(category);
+
+            return Ok();
         }
 
         [HttpPut("update/{id}")]

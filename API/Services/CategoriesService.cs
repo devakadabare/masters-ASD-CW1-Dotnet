@@ -33,6 +33,7 @@ namespace API.Services
                 name = category.name,
                 type = (Enum.CategoryType)category.type,
                 description = category.description,
+                user = await _context.Users.FindAsync(category.userid),
                 status = Enum.CategoryStatus.Active
             };
             var result = _context.Categories.Add(newCategory);

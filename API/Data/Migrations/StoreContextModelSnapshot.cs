@@ -36,7 +36,12 @@ namespace API.Data.Migrations
                     b.Property<int>("status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("userid")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("id");
+
+                    b.HasIndex("userid");
 
                     b.ToTable("Accounts");
                 });
@@ -50,7 +55,7 @@ namespace API.Data.Migrations
                     b.Property<long>("amount")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("categoryId")
+                    b.Property<int>("categoryid")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("month")
@@ -59,10 +64,17 @@ namespace API.Data.Migrations
                     b.Property<int>("status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("userid")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("year")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("id");
+
+                    b.HasIndex("categoryid");
+
+                    b.HasIndex("userid");
 
                     b.ToTable("Budgets");
                 });
@@ -86,7 +98,12 @@ namespace API.Data.Migrations
                     b.Property<int>("type")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("userid")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("id");
+
+                    b.HasIndex("userid");
 
                     b.ToTable("Categories");
                 });
@@ -121,13 +138,85 @@ namespace API.Data.Migrations
                     b.Property<int>("type")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("userid")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("id");
 
                     b.HasIndex("accountid");
 
                     b.HasIndex("categoryid");
 
+                    b.HasIndex("userid");
+
                     b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("API.Entities.User", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("firstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("lastName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("passwordHash")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("userName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("API.Entities.Account", b =>
+                {
+                    b.HasOne("API.Entities.User", "user")
+                        .WithMany("Accounts")
+                        .HasForeignKey("userid");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("API.Entities.Budget", b =>
+                {
+                    b.HasOne("API.Entities.Category", "category")
+                        .WithMany()
+                        .HasForeignKey("categoryid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Entities.User", "user")
+                        .WithMany("Budget")
+                        .HasForeignKey("userid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("category");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("API.Entities.Category", b =>
+                {
+                    b.HasOne("API.Entities.User", "user")
+                        .WithMany("Categories")
+                        .HasForeignKey("userid");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("API.Entities.Transaction", b =>
@@ -142,9 +231,17 @@ namespace API.Data.Migrations
                         .WithMany("transactions")
                         .HasForeignKey("categoryid");
 
+                    b.HasOne("API.Entities.User", "user")
+                        .WithMany("Transactions")
+                        .HasForeignKey("userid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("account");
 
                     b.Navigation("category");
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("API.Entities.Account", b =>
@@ -155,6 +252,17 @@ namespace API.Data.Migrations
             modelBuilder.Entity("API.Entities.Category", b =>
                 {
                     b.Navigation("transactions");
+                });
+
+            modelBuilder.Entity("API.Entities.User", b =>
+                {
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Budget");
+
+                    b.Navigation("Categories");
+
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

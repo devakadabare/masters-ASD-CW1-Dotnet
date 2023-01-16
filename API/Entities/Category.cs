@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using API.Enum;
 
 namespace API.Entities
@@ -9,6 +10,11 @@ namespace API.Entities
         public string name { get; set; }
 
         public string? description { get; set; }
+
+        public User? user { get; set; }
+        
+        [ForeignKey("User")]
+        public int? userid { get; set; }
 
         public CategoryType type { get; set;}
 

@@ -12,6 +12,8 @@ namespace API.DTO
 
         public string? description { get; set; }
 
+        public int? userid { get; set; }
+
         public CategoryType type { get; set;}
     }
 }

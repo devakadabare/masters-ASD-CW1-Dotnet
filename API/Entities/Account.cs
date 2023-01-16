@@ -1,4 +1,6 @@
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace API.Entities
 {
     public class Account
@@ -10,6 +12,11 @@ namespace API.Entities
         public string? description { get; set; }
 
         public long balance { get; set; }
+
+        public User? user { get; set; }
+
+        [ForeignKey("User")]
+        public int? userid { get; set; }
 
         public AccountStatus status { get; set; }
 

@@ -12,6 +12,23 @@ namespace API.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    userName = table.Column<string>(type: "TEXT", nullable: false),
+                    passwordHash = table.Column<string>(type: "TEXT", nullable: false),
+                    firstName = table.Column<string>(type: "TEXT", nullable: false),
+                    lastName = table.Column<string>(type: "TEXT", nullable: true),
+                    email = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Accounts",
                 columns: table => new
                 {
@@ -20,28 +37,17 @@ namespace API.Data.Migrations
                     name = table.Column<string>(type: "TEXT", nullable: false),
                     description = table.Column<string>(type: "TEXT", nullable: true),
                     balance = table.Column<long>(type: "INTEGER", nullable: false),
+                    userid = table.Column<int>(type: "INTEGER", nullable: true),
                     status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Budgets",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    categoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    amount = table.Column<long>(type: "INTEGER", nullable: false),
-                    month = table.Column<int>(type: "INTEGER", nullable: false),
-                    year = table.Column<int>(type: "INTEGER", nullable: false),
-                    status = table.Column<int>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Budgets", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Users_userid",
+                        column: x => x.userid,
+                        principalTable: "Users",
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -52,12 +58,48 @@ namespace API.Data.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     name = table.Column<string>(type: "TEXT", nullable: false),
                     description = table.Column<string>(type: "TEXT", nullable: true),
+                    userid = table.Column<int>(type: "INTEGER", nullable: true),
                     type = table.Column<int>(type: "INTEGER", nullable: false),
                     status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categories", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Categories_Users_userid",
+                        column: x => x.userid,
+                        principalTable: "Users",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Budgets",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    categoryid = table.Column<int>(type: "INTEGER", nullable: false),
+                    userid = table.Column<int>(type: "INTEGER", nullable: false),
+                    amount = table.Column<long>(type: "INTEGER", nullable: false),
+                    month = table.Column<int>(type: "INTEGER", nullable: false),
+                    year = table.Column<int>(type: "INTEGER", nullable: false),
+                    status = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Budgets", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Budgets_Categories_categoryid",
+                        column: x => x.categoryid,
+                        principalTable: "Categories",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Budgets_Users_userid",
+                        column: x => x.userid,
+                        principalTable: "Users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +114,7 @@ namespace API.Data.Migrations
                     type = table.Column<int>(type: "INTEGER", nullable: false),
                     accountid = table.Column<int>(type: "INTEGER", nullable: false),
                     categoryid = table.Column<int>(type: "INTEGER", nullable: true),
+                    userid = table.Column<int>(type: "INTEGER", nullable: false),
                     creditDebitIndicator = table.Column<int>(type: "INTEGER", nullable: false),
                     status = table.Column<int>(type: "INTEGER", nullable: false)
                 },
@@ -89,7 +132,33 @@ namespace API.Data.Migrations
                         column: x => x.categoryid,
                         principalTable: "Categories",
                         principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_Transactions_Users_userid",
+                        column: x => x.userid,
+                        principalTable: "Users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_userid",
+                table: "Accounts",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Budgets_categoryid",
+                table: "Budgets",
+                column: "categoryid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Budgets_userid",
+                table: "Budgets",
+                column: "userid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Categories_userid",
+                table: "Categories",
+                column: "userid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_accountid",
@@ -100,6 +169,11 @@ namespace API.Data.Migrations
                 name: "IX_Transactions_categoryid",
                 table: "Transactions",
                 column: "categoryid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_userid",
+                table: "Transactions",
+                column: "userid");
         }
 
         /// <inheritdoc />
@@ -116,6 +190,9 @@ namespace API.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

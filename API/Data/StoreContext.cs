@@ -23,5 +23,7 @@ namespace API.Data
         public DbSet<Account> Accounts { get; set; }
 
         public DbSet<Budget> Budgets { get; set; }
+
+        public DbSet<User> Users { get; set; }
     }
 }

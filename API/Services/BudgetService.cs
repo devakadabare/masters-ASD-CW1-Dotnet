@@ -30,10 +30,11 @@ namespace API.Services
         {
             var newBudget = new Budget
             {
-                categoryId = budget.categoryId,
+                categoryid = budget.categoryid,
                 amount = budget.amount,
                 month = budget.month,
                 year = budget.year,
+                user = await _context.Users.FindAsync(budget.userid),
                 status = BudgetStatus.Active
             };
 
@@ -46,7 +47,7 @@ namespace API.Services
         {
             var updateBudget = await _context.Budgets.FindAsync(id);
 
-            updateBudget.categoryId = budget.categoryId;
+            updateBudget.categoryid = budget.categoryid;
             updateBudget.amount = budget.amount;
             updateBudget.month = budget.month;
             updateBudget.year = budget.year;
