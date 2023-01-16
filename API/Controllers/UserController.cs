@@ -6,6 +6,7 @@ using API.Data;
 using API.DTO;
 using API.Entities;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -20,12 +21,14 @@ namespace API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<List<User>>> GetUsers()
         {
             return await _userService.GetUsers();
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _userService.GetUser(id);
@@ -45,6 +48,7 @@ namespace API.Controllers
         }
 
         [HttpPut("update")]
+        [Authorize]
         public async Task<ActionResult<User>> UpdateUser(User user)
         {
             if(user == null)

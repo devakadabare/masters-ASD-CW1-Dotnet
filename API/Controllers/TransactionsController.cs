@@ -1,6 +1,7 @@
 using API.DTO;
 using API.Entities;
 using API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -8,6 +9,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class TransactionsController: ControllerBase
     {
         private readonly TransactionsService _transactionsService;
